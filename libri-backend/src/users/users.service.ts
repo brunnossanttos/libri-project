@@ -4,6 +4,8 @@ import { PrismaService } from '../database/prisma.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from '@prisma/client';
 
+import * as bcrypt from 'bcrypt';
+
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
@@ -20,6 +22,11 @@ export class UsersService {
       throw Error('User already exists');
     }
 
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(data.password, saltRounds);
+
+    data.password = hashedPassword;
+
     const user = await this.prisma.user.create({ data });
 
     return user;
@@ -32,6 +39,12 @@ export class UsersService {
 
   async findOne(id: string): Promise<User | undefined> {
     const user = this.prisma.user.findUnique({ where: { id } });
+
+    return user;
+  }
+
+  async findByEmail(email: string): Promise<User | undefined> {
+    const user = this.prisma.user.findUnique({ where: { email } });
 
     return user;
   }
