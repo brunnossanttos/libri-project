@@ -1,5 +1,9 @@
+"use client";
+
 export default function Home() {
   return (
-    <div>Hello, World!</div>
+    <main className="bg-[#26313c] h-screen flex items-center justify-center p-10">
+      Hello
+    </main>
   );
 }
